@@ -1,0 +1,152 @@
+version: 2
+
+models:
+  - name: dim_cities
+    description: Dictionary of cities of arrival and destination
+    columns:
+      - name: city_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+      - name: city_name
+        description: City name
+
+  - name: dim_clients
+    description: Dictionary of clients who ordered services
+    columns:
+      - name: client_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_currencies
+    description: Dictionary of currencies which we process
+    columns:
+      - name: currency_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_services
+    description: Dictionary of our services
+    columns:
+      - name: service_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_parcels
+    description: One record per parcel
+    columns:
+      - name: parcel_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+      - name: sender_id
+        description: ID of a client who sent the parcel
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_clients')
+              field: client_id
+      - name: receiver_id
+        description: ID of a client who received the parcel
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_clients')
+              field: client_id
+      - name: origin_city_id
+        description: ID of a departure city
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_cities')
+              field: city_id
+      - name: destination_city_id
+        description: ID of a destination city
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_cities')
+              field: city_id
+      - name: service_id
+        description: ID of an ordered service
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_services')
+              field: service_id
+      - name: status
+        tests:
+          - accepted_values:
+              values: [ 'Sent', 'In Transit', 'Delivered' ]
+
+  - name: fact_shipments
+    description: One record per shipment
+    columns:
+      - name: shipment_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+      - name: parcel_id
+        description: ID of a parcel
+        tests:
+          - not_null
+          - relationships:
+              to: ref('fact_parcels')
+              field: parcel_id
+      - name: from_city_id
+        description: ID of a departure city
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_cities')
+              field: city_id
+      - name: to_city_id
+        description: ID of a destination city
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_cities')
+              field: city_id
+      - name: current_location_id
+        description: ID of a city of the current location of the parcel
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_cities')
+              field: city_id
+      - name: status
+        tests:
+          - accepted_values:
+              values: [ 'Shipped', 'In Transit', 'Arrived' ]
+
+  - name: fact_transactions
+    description: One record per transaction
+    columns:
+      - name: transaction_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+      - name: client_id
+        description: ID of a client who payed the service
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_clients')
+              field: client_id
+      - name: currency_id
+        description: ID of a transaction currency
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_currencies')
+              field: currency_id

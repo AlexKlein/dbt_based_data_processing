@@ -29,7 +29,8 @@ with DAG(**dag_config) as dag:
 
     dwh_uploading = BashOperator(
         task_id='dwh_uploading',
-        bash_command='cd /opt/airflow/dbt && dbt run',
+        # bash_command='cd /opt/airflow/dbt && dbt run',
+        bash_command='cd /opt/airflow/dbt && dbt build',
         retries=1,
         retry_delay=timedelta(minutes=1)
     )

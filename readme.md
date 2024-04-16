@@ -26,7 +26,7 @@ This DAG is responsible for data generating in `MY_SMALL_DWH` database. Should b
 
 ### Data Processing (`dwh_uploading`)
 
-The primary DAG responsible for running the dbt process to transform and load data into the data warehouse.
+The primary DAG responsible for running the dbt process to transform and load data into the data warehouse. And afterwards test datasets.
 
 - **DAG ID:** `dwh_uploading`
 - **Schedule:** On Monday at 8:30 AM.
@@ -49,6 +49,10 @@ dbt
 | └-- staging
 | └-- ...
 | └-- sources.yml
+|- tests
+| |-- scripts
+| | └-- ...
+| |-- schema.yml
 |- dbt_project.yml
 └- profiles.yml
 ```
@@ -57,11 +61,12 @@ dbt
 
 - **dbt_project.yml**: Configures dbt project settings, model paths, and schema naming conventions based on the environment (`prod` or `dev`).
 - **profiles.yml**: Defines connection settings for different environments, pointing to the PostgreSQL instance.
+- **schema.yml**: Defines the structure and data integrity tests for models in the dbt project.
 - **generate_schema_name.sql (macro)**: A dbt macro used to dynamically generate schema names based on the environment and custom logic.
 
 ### Documentation Generation (`dbt_docs_generation`)
 
-A DAG that generates dbt documentation and serves it on [this host](http://localhost:8081) for easy access and review. It takes really long time to build the web-server. After running the `dbt_docs_generation` DAG, dbt documentation will be providing a comprehensive overview of the dbt models, their relationships, and transformations.
+A DAG that generates dbt documentation and serves it on [this host](http://localhost:8081) (if add `dbt docs serve --port 8081` command) for easy access and review. After running the `dbt_docs_generation` DAG, dbt documentation will be providing a comprehensive overview of the dbt models, their relationships, and transformations. Anyway, users can access the generated documentation locally by opening the [index.html](./project/dbt/target/index.html) file in their browser to view the documentation without the need for a server.
 
 - **DAG ID:** `dbt_docs_generation`
 - **Schedule:** Only manual trigger.

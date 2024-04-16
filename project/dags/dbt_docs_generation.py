@@ -29,7 +29,8 @@ with DAG(**dag_config) as dag:
 
     dbt_docs_generate = BashOperator(
         task_id='dbt_docs_generate',
-        bash_command='cd /opt/airflow/dbt && dbt docs generate && dbt docs serve --port 8081',
+        bash_command='cd /opt/airflow/dbt && dbt docs generate',
+        # bash_command='cd /opt/airflow/dbt && dbt docs generate && dbt docs serve --port 8081',
         retries=1,
         retry_delay=timedelta(minutes=1)
     )
