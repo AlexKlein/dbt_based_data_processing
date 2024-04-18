@@ -1,0 +1,54 @@
+version: 2
+
+sources:
+  - name: post_service
+    description: This is a replica of the Postgres database used by our app
+    tables:
+      - name: clients
+        description: One record per client
+        columns:
+          - name: id
+            description: Primary key for customers
+            tests:
+              - unique
+              - not_null
+
+      - name: money_transactions
+        description: One record per transaction
+        loaded_at_field: "CAST(transaction_date AS TIMESTAMP)"
+        columns:
+          - name: id
+            description: Primary key for transactions
+            tests:
+              - unique
+              - not_null
+        freshness:
+          warn_after: { count: 1, period: day }
+          error_after: { count: 3, period: day }
+
+      - name: parcels
+        description: One record per parcel
+        columns:
+          - name: id
+            description: Primary key for parcels
+            tests:
+              - unique
+              - not_null
+
+      - name: services
+        description: One record per service
+        columns:
+          - name: id
+            description: Primary key for services
+            tests:
+              - unique
+              - not_null
+
+      - name: shipments
+        description: One record per shipment
+        columns:
+          - name: id
+            description: Primary key for shipments
+            tests:
+              - unique
+              - not_null

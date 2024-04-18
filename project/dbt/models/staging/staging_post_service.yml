@@ -1,0 +1,72 @@
+version: 2
+
+models:
+  - name: clients
+    description: Staging of a dictionary of clients who ordered services
+    columns:
+      - name: client_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+
+  - name: money_transactions
+    description: Staging of a list of transactions
+    columns:
+      - name: transaction_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+
+  - name: parcels
+    description: Staging of a list of parcels
+    columns:
+      - name: parcel_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+      - name: sender_id
+        description: Client ID of the parcel sender
+        tests:
+          - not_null
+      - name: receiver_id
+        description: Client ID of the parcel receiver
+        tests:
+          - not_null
+      - name: status
+        description: '{{ doc("parcel_status") }}'
+        tests:
+          - accepted_values:
+              values: [ 'Sent', 'In Transit', 'Delivered' ]
+
+  - name: services
+    description: Staging of a list of services
+    columns:
+      - name: service_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+
+  - name: shipments
+    description: Staging of a list of shipments
+    columns:
+      - name: shipment_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+      - name: parcel_id
+        description: ID of a parcel
+        tests:
+          - not_null
+          - relationships:
+              to: ref('parcels')
+              field: parcel_id
+      - name: status
+        description: '{{ doc("shipment_status") }}'
+        tests:
+          - accepted_values:
+              values: [ 'Shipped', 'In Transit', 'Arrived' ]

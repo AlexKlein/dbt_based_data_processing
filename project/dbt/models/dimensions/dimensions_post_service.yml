@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: dim_cities
+    description: Dictionary of cities of arrival and destination
+    columns:
+      - name: city_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+      - name: city_name
+        description: City name
+
+  - name: dim_clients
+    description: Dictionary of clients who ordered services
+    columns:
+      - name: client_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_currencies
+    description: Dictionary of currencies which we process
+    columns:
+      - name: currency_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_services
+    description: Dictionary of our services
+    columns:
+      - name: service_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
